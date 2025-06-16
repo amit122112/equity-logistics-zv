@@ -8,6 +8,7 @@ import { ArrowLeft, Lock, CheckCircle, AlertCircle, KeyRound } from "lucide-reac
 import Link from "next/link"
 import { EquityLogo } from "@/components/Logo"
 import { API_URL } from "@/lib/auth"
+import { verifyResetCode } from "@/lib/api"
 
 export default function VerifyResetCode() {
   const router = useRouter()
@@ -71,35 +72,18 @@ export default function VerifyResetCode() {
     setError("")
 
     try {
-      const response = await fetch(
-        `${API_URL}/VerifyResetCode?email=${encodeURIComponent(email)}&token=${encodeURIComponent(code)}&password=${encodeURIComponent(password)}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        },
-      )
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setSuccess(true)
-        // Redirect to login after 3 seconds
-        setTimeout(() => {
-          router.push("/login")
-        }, 3000)
-      } else {
-        if (data.errors) {
-          setValidationErrors(data.errors)
-        } else {
-          setError(data.message || "Failed to reset password. Please check your code and try again.")
-        }
-      }
+      const data = await verifyResetCode(email, code, password)
+      setSuccess(true)
+      setTimeout(() => {
+        router.push("/login")
+      }, 3000)
     } catch (error) {
       console.error("Verify reset code error:", error)
-      setError("An error occurred while resetting your password. Please try again later.")
+      if (error instanceof Error) {
+        setError(error.message)
+      } else {
+        setError("An error occurred while resetting your password. Please try again later.")
+      }
     } finally {
       setLoading(false)
     }

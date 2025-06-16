@@ -458,7 +458,7 @@ export default function ShipmentForm() {
                 {quote.available ? (
                   <>
                     <div className="mb-6">
-                      <p className="text-lg font-semibold mb-2">Total Cost: ${quote.price} + 24.3% Fuel Levy + GST</p>
+                      <p className="text-lg font-semibold mb-2">Total Cost: ${quote.price} + Fuel Levy + GST</p>
                       <p className="text-sm text-gray-700">
                         Additional charges may apply please contact Equity Logistics for final quotation
                       </p>
